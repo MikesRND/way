@@ -1,0 +1,6 @@
+# Platform-specific discovery directories (created by setup.sh as symlinks)
+.agents/skills/
+
+# Editor and OS noise
+.DS_Store
+*.swp
