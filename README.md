@@ -41,6 +41,23 @@ Workflow artifacts live at `myapp/.way/elements/<element_key>/`.
 submodule bump. The pin gives you version control over which framework
 revision the project is on.
 
+### Toggling skills
+
+`setup.sh` installs all nine skills by default. Use `disable.sh` /
+`enable.sh` to opt individual skills out or back in:
+
+```bash
+.way/way/disable.sh way-impl-review        # remove its symlinks
+.way/way/disable.sh --all                  # disable everything
+
+.way/way/enable.sh way-impl-review         # restore its symlinks
+.way/way/enable.sh --all                   # re-enable everything disabled
+```
+
+State lives in `<project>/.way/disabled-skills` (plain text, one skill
+per line, comments after `#`). Check it in — it's project policy.
+Re-running `setup.sh` respects whatever's in that file.
+
 ### Using it
 
 In any supported tool, ask the agent to use a `way-*` skill — start with
