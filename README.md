@@ -12,43 +12,34 @@ keeping high-level concerns from being drowned in code-level detail.
 
 ## Quick Start
 
-Two install modes. Pick one — they don't interfere with each other.
-
-### Project install (try-out)
-
-Add `way` as a submodule of your target project, then let its `setup.sh`
-wire the per-project symlinks and `AGENTS.md` pointer. Skills are
-discovered only inside that project; nothing user-global is touched.
+`way` installs **per project** as a git submodule. It does not modify
+anything user-global.
 
 ```bash
 cd ~/projects/myapp
 git submodule add git@github.com:MikesRND/way.git .way/way
-.way/way/setup.sh --project .
+.way/way/setup.sh                  # or .way/way/setup.sh ~/projects/myapp
 ```
 
-This creates:
+That writes, scoped to `myapp/`:
 
-- `myapp/.claude/skills/way-*` → relative symlinks into the submodule
-  (Claude Code's per-project skill discovery)
-- `myapp/AGENTS.md` — appended (or created) with a sentinel-guarded
-  pointer to the framework, picked up by Codex CLI and any other tool
-  that reads `AGENTS.md`
+- `.agents/skills/way-*` — nine relative symlinks into the submodule.
+  This is the canonical location and is what
+  [Codex discovers natively](https://developers.openai.com/codex/skills).
+- `.claude/skills` → `../.agents/skills` — single dir-level symlink so
+  Claude Code's per-project skill discovery picks up the same set. If
+  `.claude/skills/` already exists with other skills, `setup.sh` falls
+  back to per-skill symlinks under that directory instead of replacing it.
+- `AGENTS.md` — appended (or created) with a sentinel-guarded pointer
+  block. Honored by Codex and any other tool that reads `AGENTS.md`.
 
-The mount path is whatever you pick when adding the submodule —
-`setup.sh` auto-detects it from its own location relative to `--project`.
+The submodule mount path is whatever you pick when adding it — `setup.sh`
+auto-detects its own location relative to the target project.
 Workflow artifacts live at `myapp/.way/elements/<element_key>/`.
 
-### Global install (every repo, every tool)
-
-```bash
-git clone git@github.com:MikesRND/way.git ~/way
-cd ~/way
-./setup.sh
-```
-
-Auto-detects installed tools (Claude Code, Codex CLI, Cursor, VS Code /
-Copilot) and symlinks each `skills/way-*/` into the right user-global
-discovery directory. Safe to re-run.
+**Updating the framework:** `git -C .way/way pull` and commit the
+submodule bump. The pin gives you version control over which framework
+revision the project is on.
 
 ### Using it
 
